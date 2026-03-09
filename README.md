@@ -1,20 +1,13 @@
-# HeapScan V2
+# موثوق رحاب (Mawthooq Rehab)
 
-A pure LiDAR-only iOS application with live 3D visualization during capture for stockpile volume measurements.
+تطبيق iOS لتوثيق الصور بعلامة مائية لشركة رحاب.
 
 ## Features
-* Live Black Viewfinder with 3D Point Cloud overlay
-* Maximum Performance Mode (No thermal throttling)
-* Auto-Capture System based on device stability & confidence
-* Real-Time Quality/Coverage Visualization
-* Advanced Mathematical processing (RANSAC, Convex Hull, Statistics)
+- التقاط صور مع علامة مائية تلقائية
+- إضافة اسم المصور والتاريخ والوقت
+- حفظ الصور في مكتبة الصور
+- إنشاء تقارير PDF بالعربية
+- رابط Google Maps لموقع التصوير
 
-## Stack
-* SwiftUI
-* ARKit / SceneKit
-* Accelerate
-
-## Bundling
-* Name: HeapScan V2
-* ID: com.maaden.minescanner.v2
-* Version: 3.0.0, Build: 30
+## Build
+GitHub Actions workflow included for automatic IPA build.
