@@ -1,0 +1,31 @@
+name: Build & OTA Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Select Xcode
+        run: sudo xcode-select -switch /Applications/Xcode.app
+
+      - name: Build App (dummy step for xcodebuild without valid cert payload)
+        run: |
+          mkdir -p build/Payload
+          cp -r HeapScanV2 build/Payload/HeapScanV2.app
+          cd build
+          zip -r HeapScanV2.ipa Payload
+
+      - name: Deploy to OTA Repo
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          personal_token: ${{ secrets.OTA_DEPLOY_TOKEN }}
+          external_repository: SIMBA1421/heapscanv2-ota
+          publish_branch: main
+          keep_files: true
+          publish_dir: ./build
