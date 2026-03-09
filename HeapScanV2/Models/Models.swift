@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import CoreLocation
 
 struct PointCloud {
     var points: [Vector3]
@@ -24,14 +25,21 @@ struct HeapMeasurement {
     var qualityScore: Double
 }
 
-class ScanSession: ObservableObject {
+class ScanSession: ObservableObject, Identifiable {
+    let id = UUID()
     @Published var rawCloud: PointCloud?
     @Published var processedCloud: PointCloud?
     @Published var measurement: HeapMeasurement?
     @Published var overallQuality: Double = 0.0
+    @Published var density: Double = UserDefaults.standard.double(forKey: "defaultDensity") == 0 ? 1.5 : UserDefaults.standard.double(forKey: "defaultDensity")
+    @Published var location: CLLocation?
     
     var timestamp: Date = Date()
     var frameCount: Int = 0
+    
+    var weight: Double {
+        return (measurement?.volume ?? 0) * density
+    }
 }
 
 struct Constants {

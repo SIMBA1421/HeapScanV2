@@ -6,6 +6,7 @@ struct ResultView: View {
     @ObservedObject var session: ScanSession
     @State private var showingExportMenu = false
     @State private var showingReport = false
+    @State private var generatedPDFUrl: URL?
 
     var body: some View {
         NavigationView {
@@ -24,7 +25,7 @@ struct ResultView: View {
                 }
 
                 List {
-                    Section(header: Text("Measurements")) {
+                    Section(header: Text("Measurements (Density: \(session.density, specifier: "%.2f") t/m³)")) {
                         HStack {
                             Text("Volume")
                             Spacer()
@@ -32,29 +33,29 @@ struct ResultView: View {
                                 .bold()
                         }
                         HStack {
+                            Text("Weight")
+                            Spacer()
+                            Text("\(session.weight, specifier: "%.2f") tonnes")
+                                .bold()
+                                .foregroundColor(.blue)
+                        }
+                        HStack {
                             Text("Base Area")
                             Spacer()
                             Text("\(session.measurement?.baseArea ?? 0.0, specifier: "%.2f") m²")
                                 .bold()
                         }
-                        HStack {
-                            Text("Max Height")
-                            Spacer()
-                            Text("\(session.measurement?.maxHeight ?? 0.0, specifier: "%.2f") m")
-                                .bold()
-                        }
                     }
                     
-                    Section(header: Text("Quality")) {
-                         HStack {
-                            Text("Total Points")
-                            Spacer()
-                            Text("\(session.processedCloud?.points.count ?? 0)")
-                        }
-                        HStack {
-                            Text("Coverage Score")
-                            Spacer()
-                            Text("\(Int(session.overallQuality * 100))%")
+                    if let loc = session.location {
+                        Section(header: Text("Location")) {
+                            HStack {
+                                Text("Coordinates")
+                                Spacer()
+                                Text("\(loc.coordinate.latitude, specifier: "%.4f"), \(loc.coordinate.longitude, specifier: "%.4f")")
+                                    .font(.caption)
+                            }
+                            Link("Open in Google Maps", destination: URL(string: "https://www.google.com/maps?q=\(loc.coordinate.latitude),\(loc.coordinate.longitude)")!)
                         }
                     }
                 }
@@ -88,14 +89,46 @@ struct ResultView: View {
             .navigationBarItems(trailing: Button("Done") {
                 // Return to scan
             })
+            .sheet(isPresented: $showingReport) {
+                if let url = generatedPDFUrl {
+                    ActivityViewController(activityItems: [url])
+                }
+            }
         }
     }
     
     func generatePDF() {
-        // Report logic
+        if let url = ReportService.shared.generatePDF(session: session, snapshot: nil) {
+            self.generatedPDFUrl = url
+            self.showingReport = true
+        }
     }
     
     func exportCSV() {
-        // CSV logic
+        // Build CSV string
+        var csvText = "X,Y,Z,R,G,B\n"
+        guard let points = session.processedCloud?.points, let colors = session.processedCloud?.colors else { return }
+        
+        for i in 0..<points.count {
+            csvText += "\(points[i].x),\(points[i].y),\(points[i].z),\(colors[i].x),\(colors[i].y),\(colors[i].z)\n"
+        }
+        
+        let path = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("HeapScan_Export_\(Date().timeIntervalSince1970).csv")
+        try? csvText.write(to: path, atomically: true, encoding: .utf8)
+        
+        self.generatedPDFUrl = path
+        self.showingReport = true
     }
+}
+
+struct ActivityViewController: UIViewControllerRepresentable {
+    var activityItems: [Any]
+    var applicationActivities: [UIActivity]? = nil
+
+    func makeUIViewController(context: UIViewControllerRepresentableContext<ActivityViewController>) -> UIActivityViewController {
+        let controller = UIActivityViewController(activityItems: activityItems, applicationActivities: applicationActivities)
+        return controller
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: UIViewControllerRepresentableContext<ActivityViewController>) {}
 }

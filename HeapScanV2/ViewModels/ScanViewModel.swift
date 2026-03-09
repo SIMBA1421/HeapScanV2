@@ -16,6 +16,7 @@ class ScanViewModel: ObservableObject {
     var captureService = LiDARCaptureService()
     var processor = PointCloudProcessor()
     var qualityAnalyzer = QualityAnalyzer()
+    var locationService = LocationService()
     
     private var trackingTimer: Timer?
     private var cancellables = Set<AnyCancellable>()
@@ -42,6 +43,7 @@ class ScanViewModel: ObservableObject {
         isScanning = true
         frameCount = 0
         session = ScanSession() // Start new trace
+        session?.location = locationService.location
         currentPointCloud = PointCloud()
         guidanceMessage = "Move slowly over the stockpile"
         captureService.startSession() // Max performance profile

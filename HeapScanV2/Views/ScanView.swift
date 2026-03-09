@@ -3,6 +3,7 @@ import ARKit
 
 struct ScanView: View {
     @StateObject private var viewModel = ScanViewModel()
+    @State private var showSettings = false
     
     var body: some View {
         ZStack {
@@ -26,7 +27,7 @@ struct ScanView: View {
                     .padding()
                     Spacer()
                     Button(action: {
-                        // Settings
+                        showSettings = true
                     }) {
                         Image(systemName: "gear")
                             .foregroundColor(.white)
@@ -80,8 +81,16 @@ struct ScanView: View {
                     }
                     
                     Spacer()
-                    Spacer().frame(width: 80) // Balance
+                    Button(action: {
+                         // Session History List Stub
+                    }) {
+                         Image(systemName: "clock")
+                             .foregroundColor(.white)
+                             .padding()
+                             .background(Circle().fill(Color.gray.opacity(0.5)))
+                    }
                 }
+                .padding(.horizontal, 30)
                 .padding(.bottom, 30)
             }
         }
@@ -89,6 +98,9 @@ struct ScanView: View {
             if let session = viewModel.session {
                 ResultView(session: session)
             }
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
         }
     }
 }
