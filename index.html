@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HeapScan V2 — Install</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #0d1117;
+    color: #e6edf3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  .card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 16px;
+    padding: 40px;
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+  }
+  .icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    border-radius: 18px;
+    margin: 0 auto 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+  }
+  h1 { font-size: 24px; margin-bottom: 8px; }
+  .version { color: #8b949e; font-size: 14px; margin-bottom: 24px; }
+  .install-btn {
+    display: inline-block;
+    background: #2ea043;
+    color: white;
+    padding: 16px 48px;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .note {
+    margin-top: 24px;
+    font-size: 12px;
+    color: #8b949e;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="icon">&#9968;</div>
+  <h1>HeapScan V2</h1>
+  <p class="version">Version 3.0.0 — LiDAR Enhanced</p>
+  <a class="install-btn" href="itms-services://?action=download-manifest&amp;url=https://simba1421.github.io/heapscanv2-ota/manifest.plist">
+    Install
+  </a>
+  <p class="note">
+    Open in <strong>Safari</strong> on your iPhone.<br>
+    After install, go to:<br>
+    <strong>Settings &gt; General &gt; VPN &amp; Device Management</strong><br>
+    Tap your developer profile &gt; Trust.
+  </p>
+</div>
+</body>
+</html>
